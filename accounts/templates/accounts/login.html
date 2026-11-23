@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Ingresar | Inventario SPL{% endblock %}
+{% block content %}
+<div class="auth">
+  <aside class="auth-marca">
+    <div class="auth-logo">&#128230;</div>
+    <h2>Inventario SPL</h2>
+    <p>Controla tus productos, existencias y categorías desde un solo lugar.</p>
+    <ul>
+      <li>Registro y edición de productos</li>
+      <li>Búsqueda por código o nombre</li>
+      <li>Alertas visuales de stock bajo</li>
+    </ul>
+    <span class="auth-variante">{{ product.name }}</span>
+  </aside>
+  <section class="auth-form">
+    <h1>Iniciar sesión</h1>
+    <p class="auth-sub">Ingresa tus credenciales para continuar.</p>
+    <form method="post" class="formulario" novalidate>
+      {% csrf_token %}
+      {% include "includes/form_campos.html" %}
+      <button class="btn btn-primario btn-bloque" type="submit">Ingresar</button>
+    </form>
+    <p class="auth-pie">¿No tienes cuenta? <a href="{% url 'accounts:registro' %}">Crea una aquí</a></p>
+  </section>
+</div>
+{% endblock %}

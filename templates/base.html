@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Inventario SPL{% endblock %}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #f3f5f9; color: #1d2433; }
+    header { background: #1f3b73; color: #fff; }
+    .barra { max-width: 1040px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 22px; }
+    .marca { font-weight: 700; font-size: 18px; }
+    nav { display: flex; gap: 16px; flex: 1; }
+    nav a, .usuario a, .usuario button { color: #dfe7f7; text-decoration: none; font-size: 14px; }
+    nav a:hover { color: #fff; }
+    .usuario { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+    .usuario form { margin: 0; }
+    .usuario button { background: none; border: 0; cursor: pointer; padding: 0; font: inherit; }
+    .campana { position: relative; }
+    .contador { background: #e5484d; color: #fff; border-radius: 10px; padding: 1px 7px; font-size: 12px; margin-left: 4px; }
+    main { max-width: 1040px; margin: 24px auto; padding: 0 20px; }
+    .tarjeta { background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    h1 { font-size: 22px; margin: 0 0 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; background: #eef2f9; padding: 9px 10px; color: #3b4760; }
+    td { padding: 9px 10px; border-bottom: 1px solid #e6e9f0; }
+    .derecha { text-align: right; }
+    .btn { display: inline-block; padding: 8px 14px; border-radius: 6px; font-size: 14px; text-decoration: none; border: 0; cursor: pointer; }
+    .btn-primario { background: #1f3b73; color: #fff; }
+    .btn-exportar { background: #1d7a4f; color: #fff; }
+    .btn-claro { background: #eef2f9; color: #1f3b73; }
+    .acciones { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+    .acciones form { display: flex; gap: 8px; flex: 1; }
+    input[type=text], input[type=search], input[type=password], input[type=number], select { padding: 8px 10px; border: 1px solid #cdd3df; border-radius: 6px; font-size: 14px; }
+    .badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+    .badge-ok { background: #e3f4ea; color: #1d7a4f; }
+    .badge-bajo { background: #fde8e8; color: #b42318; }
+    .mensaje { background: #e3f4ea; color: #1d7a4f; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; }
+    .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+    .kpi { background: #eef2f9; border-radius: 8px; padding: 14px; }
+    .kpi span { display: block; font-size: 13px; color: #5a6478; }
+    .kpi strong { font-size: 22px; }
+    footer { max-width: 1040px; margin: 0 auto 24px; padding: 0 20px; font-size: 12px; color: #6b7487; }
+    /* Formularios */
+    .formulario .campo { margin-bottom: 16px; }
+    .formulario label { display: block; font-size: 13px; font-weight: 600; color: #3b4760; margin-bottom: 6px; }
+    .formulario input:not([type=checkbox]), .formulario select {
+      width: 100%; padding: 11px 13px; border: 1px solid #cdd3df; border-radius: 8px; font-size: 15px;
+      background: #fbfcfe; color: #1d2433; transition: border-color .15s, box-shadow .15s; font-family: inherit; }
+    .formulario input:focus, .formulario select:focus { outline: none; border-color: #3a64c0; background: #fff; box-shadow: 0 0 0 3px rgba(58,100,192,.18); }
+    .formulario .con-error input, .formulario .con-error select { border-color: #e5484d; }
+    .formulario .error { display: block; color: #b42318; font-size: 12px; margin-top: 5px; }
+    .formulario .ayuda { font-size: 12px; color: #6b7487; margin-top: 5px; }
+    .formulario .ayuda ul { margin: 4px 0 0; padding-left: 18px; }
+    .formulario.rejilla { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
+    .formulario.rejilla .botones, .formulario.rejilla .alerta-error { grid-column: 1 / -1; }
+    .botones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+    .btn-bloque { width: 100%; padding: 12px; font-size: 15px; font-weight: 600; margin-top: 4px; }
+    .btn-primario:hover { background: #18305f; }
+    .alerta-error { background: #fde8e8; color: #b42318; border: 1px solid #f6c5c5; padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 16px; }
+    /* Ingreso y registro */
+    .auth { display: grid; grid-template-columns: 1fr 1.1fr; max-width: 860px; margin: 24px auto; background: #fff;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(31,59,115,.12); }
+    .auth-marca { background: linear-gradient(150deg, #1f3b73 0%, #2f5aa8 100%); color: #fff; padding: 40px 34px; display: flex; flex-direction: column; }
+    .auth-logo { width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,.15); display: grid; place-items: center; font-size: 26px; margin-bottom: 22px; }
+    .auth-marca h2 { margin: 0 0 10px; font-size: 24px; }
+    .auth-marca p { margin: 0 0 20px; color: #dfe7f7; line-height: 1.5; }
+    .auth-marca ul { margin: 0; padding: 0; list-style: none; flex: 1; }
+    .auth-marca li { padding-left: 26px; position: relative; margin-bottom: 12px; color: #eef2f9; font-size: 14px; }
+    .auth-marca li::before { content: "\2713"; position: absolute; left: 0; width: 18px; height: 18px; border-radius: 50%;
+                             background: rgba(255,255,255,.2); font-size: 11px; display: grid; place-items: center; top: 1px; }
+    .auth-variante { align-self: flex-start; margin-top: 24px; background: rgba(255,255,255,.15); padding: 5px 12px; border-radius: 20px; font-size: 12px; }
+    .auth-form { padding: 40px 38px; }
+    .auth-form h1 { font-size: 24px; margin-bottom: 4px; }
+    .auth-sub { color: #6b7487; margin: 0 0 24px; font-size: 14px; }
+    .auth-pie { text-align: center; font-size: 14px; color: #5a6478; margin: 20px 0 0; }
+    .auth-pie a, .auth-form a { color: #2f5aa8; font-weight: 600; text-decoration: none; }
+    @media (max-width: 720px) { .auth { grid-template-columns: 1fr; } .auth-marca { padding: 28px; } .formulario.rejilla { grid-template-columns: 1fr; } }
+    .variante { display: inline-block; background: #dfe7f7; color: #1f3b73; border-radius: 4px; padding: 2px 8px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="barra">
+    <span class="marca">Inventario SPL</span>
+    <nav>
+      <a href="{% url 'core:producto_list' %}">Productos</a>
+      {% if features.reports %}
+        <a href="{% url 'reports:panel' %}">Reportes</a>
+      {% endif %}
+      <a href="/admin/">Administración</a>
+    </nav>
+    <div class="usuario">
+      {% if features.notifications %}
+        <a class="campana" href="{% url 'notifications:lista' %}">&#128276; Alertas<span class="contador">{{ notificaciones_pendientes }}</span></a>
+      {% endif %}
+      {% if user.is_authenticated %}
+        <span>{{ user.username }}</span>
+        <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button type="submit">Salir</button></form>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Ingresar</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+<main>
+  {% if messages %}{% for m in messages %}<div class="mensaje">{{ m }}</div>{% endfor %}{% endif %}
+  {% block content %}{% endblock %}
+</main>
+<footer>
+  Producto activo: <span class="variante">{{ product.name }}</span>
+  &middot; Reportes: {% if features.reports %}activado{% else %}desactivado{% endif %}
+  &middot; Notificaciones: {% if features.notifications %}activado{% else %}desactivado{% endif %}
+</footer>
+</body>
+</html>

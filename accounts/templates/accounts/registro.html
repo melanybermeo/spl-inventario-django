@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Registro | Inventario SPL{% endblock %}
+{% block content %}
+<div class="auth">
+  <aside class="auth-marca">
+    <div class="auth-logo">&#128230;</div>
+    <h2>Únete a Inventario SPL</h2>
+    <p>Crea tu cuenta para registrar y actualizar productos.</p>
+    <ul>
+      <li>Usa solo letras, números y @ . + - _ en el usuario</li>
+      <li>La contraseña debe tener al menos 8 caracteres</li>
+    </ul>
+    <span class="auth-variante">{{ product.name }}</span>
+  </aside>
+  <section class="auth-form">
+    <h1>Crear cuenta</h1>
+    <p class="auth-sub">Completa los datos para registrarte.</p>
+    <form method="post" class="formulario" novalidate>
+      {% csrf_token %}
+      {% include "includes/form_campos.html" %}
+      <button class="btn btn-primario btn-bloque" type="submit">Registrarme</button>
+    </form>
+    <p class="auth-pie">¿Ya tienes cuenta? <a href="{% url 'accounts:login' %}">Inicia sesión</a></p>
+  </section>
+</div>
+{% endblock %}

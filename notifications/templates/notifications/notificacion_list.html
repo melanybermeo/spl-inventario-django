@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Alertas | Inventario SPL{% endblock %}
+{% block content %}
+<div class="tarjeta">
+  <h1>Alertas de inventario</h1>
+  <table>
+    <thead><tr><th>Mensaje</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+    {% for n in notificaciones %}
+      <tr>
+        <td>{{ n.mensaje }}</td>
+        <td>{% if n.leida %}<span class="badge badge-ok">Leída</span>{% else %}<span class="badge badge-bajo">Pendiente</span>{% endif %}</td>
+        <td>{% if not n.leida %}<form method="post" action="{% url 'notifications:marcar_leida' n.pk %}">{% csrf_token %}<button class="btn btn-claro" type="submit">Marcar como leída</button></form>{% endif %}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="3">No hay alertas.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

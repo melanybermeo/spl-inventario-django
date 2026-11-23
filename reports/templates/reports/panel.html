@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Reportes | Inventario SPL{% endblock %}
+{% block content %}
+<div class="tarjeta">
+  <h1>Panel de reportes</h1>
+  <div class="kpis">
+    <div class="kpi"><span>Productos registrados</span><strong>{{ total_productos }}</strong></div>
+    <div class="kpi"><span>Unidades en stock</span><strong>{{ total_unidades }}</strong></div>
+    <div class="kpi"><span>Valor del inventario</span><strong>$ {{ valor_inventario }}</strong></div>
+  </div>
+  <div class="acciones">
+    {% if 'pdf' in features.report_formats %}<a class="btn btn-exportar" href="{% url 'reports:exportar_pdf' %}">Descargar PDF</a>{% endif %}
+    {% if 'csv' in features.report_formats %}<a class="btn btn-exportar" href="{% url 'reports:exportar_csv' %}">Descargar CSV</a>{% endif %}
+  </div>
+  <h2 style="font-size:16px">Valor por categoría</h2>
+  <table>
+    <thead><tr><th>Categoría</th><th class="derecha">Productos</th><th class="derecha">Valor</th></tr></thead>
+    <tbody>
+    {% for nombre, datos in por_categoria %}
+      <tr><td>{{ nombre }}</td><td class="derecha">{{ datos.cantidad }}</td><td class="derecha">$ {{ datos.valor }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <h2 style="font-size:16px; margin-top:20px">Productos con stock bajo ({{ bajo_stock|length }})</h2>
+  <table>
+    <thead><tr><th>Código</th><th>Producto</th><th class="derecha">Stock</th><th class="derecha">Mínimo</th></tr></thead>
+    <tbody>
+    {% for p in bajo_stock %}
+      <tr><td>{{ p.codigo }}</td><td>{{ p.nombre }}</td><td class="derecha">{{ p.stock }}</td><td class="derecha">{{ p.stock_minimo }}</td></tr>
+    {% empty %}
+      <tr><td colspan="4">Ningún producto bajo el mínimo.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
